@@ -1,0 +1,18 @@
+import pygame
+
+WIDTH = 600
+HEIGHT = 600
+ROWS=8
+COLS=8
+SQUARE= WIDTH // COLS
+
+#SOLO DEFINO ALGUNOS COLORES A USAR EN EL TABLERO
+
+BLUE=(22, 83, 113)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY= (238,242,238)
+
+CROWN = pygame.transform.scale(pygame.image.load('assets/wing.png'), (44, 25))
+
+
