@@ -37,5 +37,10 @@ class Piece:
         if self.king:
             window.blit(CROWN,(self.x- CROWN.get_width()//2,self.y- CROWN.get_height()//2))
 
+    def move(self,row,col):
+        self.row=row
+        self.col=col
+        self.calc_position()
+    
     def __repr__(self) :
         return str(self.color)
