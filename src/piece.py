@@ -10,13 +10,6 @@ class Piece:
         self.col=col
         self.color=color
         self.king=False
-        
-        #Condicion para la direccion de las fichas
-        if self.color == WHITE:
-            self.direction=-1
-        else:
-            self.direction=1
-            
         self.x=0
         self.y=0
         self.calc_position()
