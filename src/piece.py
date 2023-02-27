@@ -13,7 +13,6 @@ class Piece:
         self.x=0
         self.y=0
         self.calc_position()
-        
     
     def calc_position(self):
         #Centramos la pieza
@@ -36,4 +35,5 @@ class Piece:
         self.calc_position()
     
     def __repr__(self) :
+        # Devolvemos el color de la pieza en forma de cadena
         return str(self.color)
