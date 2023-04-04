@@ -7,4 +7,6 @@ El juego utiliza una clase "Board" para mantener el estado del tablero del juego
 
 El juego también utiliza algunas funciones de ayuda, incluyendo "\_draw_board" para dibujar el tablero del juego y "\_get_valid_moves" para determinar los movimientos válidos de una pieza dada.
 
+Este Juego de damas implementa el algoritmo min-max y una optimizacion pensada con el uso del algoritmo Genetico 
+
 """
