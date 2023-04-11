@@ -1,5 +1,6 @@
 import pygame
 import random
+import pickle
 from copy import deepcopy
 from constants import *
 from board import *
@@ -33,7 +34,7 @@ def minimax(position, depth, max_player, game, population_size, num_generations)
 
         print("MaxEval:", maxEval)
         print("Best Move:", best_move)
-        print("Best Individual Eval:", best_individual_eval , "\n")
+        print("Best Individual Eval:", best_individual_eval, "\n")
 
         # if best_individual_eval>=maxEval:
         # return best_individual_eval,best_individual
@@ -57,12 +58,22 @@ def minimax(position, depth, max_player, game, population_size, num_generations)
 
         print("MinEval:", minEval)
         print("Best Move:", best_move)
-        print("Best Individual Eval:", best_individual_eval , "\n")
+        print("Best Individual Eval:", best_individual_eval, "\n")
 
         # if best_individual_eval <= minEval:
         # return best_individual_eval, best_individual
 
         return minEval, best_move
+
+
+def save_population(population, filename):
+    with open(filename, 'wb') as file:
+        pickle.dump(population, file)
+
+
+def load_population(filename):
+    with open(filename, 'rb') as file:
+        return pickle.load(file)
 
 
 def simulate_move(piece, move, board, game, skip):
@@ -240,8 +251,19 @@ def replacement(population, offspring):
 
 def genetic_algorithm(board, color, game, population_size, num_generations):
     board = Board()
-    # Generar la población inicial
-    population = generate_population(board, color, game, population_size)
+
+    # Cargar la población guardada si existe, de lo contrario generar una nueva población
+    try:
+        population = load_population('population.pkl')
+    except FileNotFoundError:
+        # Generar la población inicial
+        population = generate_population(board, color, game, population_size)
+        # Guardar la población inicial
+        save_population(population, 'population.pkl')
+
+     # Imprime el contenido de la población
+    for index, individual in enumerate(population, start=1):
+        print(f"Individual {index}: {individual}\n")
 
     for i in range(num_generations):
         # Selección de padres
@@ -261,7 +283,7 @@ def genetic_algorithm(board, color, game, population_size, num_generations):
         fitness_descendencia = [evaluate_board(
             individual, color) for individual in offspring]
 
-        #print(fitness_descendencia)
+        # print(fitness_descendencia)
 
         # Reemplazo de los individuos menos aptos por los más aptos de la descendencia
         population = replacement(population, population)

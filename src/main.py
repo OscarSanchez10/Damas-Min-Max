@@ -121,6 +121,8 @@ def USUARIOvsIA(game):
         pygame.display.update()
         mainClock.tick(60)
 
+    pygame.quit()
+
 
 def usuarioVSusuario():
     running = True
