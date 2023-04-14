@@ -3,8 +3,10 @@ import random
 import pickle
 from copy import deepcopy
 from constants import *
-from board import *
+from board import Board 
 from piece import *
+
+
 
 
 def minimax(position, depth, max_player, game, population_size, num_generations):
@@ -249,13 +251,15 @@ def replacement(population, offspring):
     return sorted_population[:len(population)]
 
 
+
 def genetic_algorithm(board, color, game, population_size, num_generations):
-    board = Board()
+   
 
     # Cargar la población guardada si existe, de lo contrario generar una nueva población
     try:
         population = load_population('population.pkl')
     except FileNotFoundError:
+        board = Board()
         # Generar la población inicial
         population = generate_population(board, color, game, population_size)
         # Guardar la población inicial

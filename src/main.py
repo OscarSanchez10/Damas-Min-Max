@@ -12,7 +12,7 @@ pygame.display.set_caption('JUEGO DAMAS M&M')
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
-font = pygame.font.SysFont("arialblack", 40)
+font = pygame.font.SysFont("arialblack", 15)
 
 
 def draw_text(text, font, color, surface, x, y):
@@ -38,28 +38,39 @@ def main():
 
     while run:
 
-        screen.fill((0, 0, 0))
-        draw_text('Juego damas', font, (255, 255, 0), screen, 20, 20)
+        screen.fill((37, 73, 41))
+        draw_text('JUEGO DAMAS', font, (192, 192, 192), screen, 175, 30)
 
         mx, my = pygame.mouse.get_pos()
 
-        button_1 = pygame.Rect(50, 100, 200, 50)
-        button_2 = pygame.Rect(50, 200, 200, 50)
-        button_3 = pygame.Rect(50, 300, 200, 50)
+        button_1 = pygame.Rect(150, 100, 200, 50)
+        button_3 = pygame.Rect(150, 300, 200, 50)
+        button_2 = pygame.Rect(150, 200, 200, 50)
 
         if button_1.collidepoint((mx, my)):
             if click:
                 USUARIOvsIA(game)
-        if button_2.collidepoint((mx, my)):
-            if click:
-                usuarioVSusuario()
         if button_3.collidepoint((mx, my)):
+            if click:
+                usuarioVSusuario(game)
+        if button_2.collidepoint((mx, my)):
             if click:
                 iaVSia()
 
         pygame.draw.rect(screen, (192, 192, 192), button_1)
-        pygame.draw.rect(screen, (192, 192, 192), button_2)
+        button_1_text = font.render('HUMAN vs IA', True, (0, 0, 0))
+        button_1_text_rect = button_1_text.get_rect(center=button_1.center)
+        screen.blit(button_1_text, button_1_text_rect)
+
         pygame.draw.rect(screen, (192, 192, 192), button_3)
+        button_1_text = font.render('HUMAN vs HUMAN', True, (0, 0, 0))
+        button_1_text_rect = button_1_text.get_rect(center=button_3.center)
+        screen.blit(button_1_text, button_1_text_rect)
+
+        pygame.draw.rect(screen, (192, 192, 192), button_2)
+        button_1_text = font.render('IA vs IA', True, (0, 0, 0))
+        button_1_text_rect = button_1_text.get_rect(center=button_2.center)
+        screen.blit(button_1_text, button_1_text_rect)
 
         click = False
         for event in pygame.event.get():
@@ -96,14 +107,19 @@ def USUARIOvsIA(game):
             game.ai_move(new_board)
             pygame.display.update()
 
-# interfaz para ganador
-
+        # interfaz para ganador
         if game.winner() is not None:
+            pygame.display.update()
 
             winner = game.winner(WHITE)
             print(winner)
+            font = pygame.font.SysFont(None, 48)
+            text = font.render("El ganador es: " + winner,
+                               True, (255, 255, 255))
+            text_rect = text.get_rect(center=screen.get_rect().center)
+            screen.blit(text, text_rect)
             running = False
-            return winner
+            break
 
         for event in pygame.event.get():
 
@@ -124,22 +140,46 @@ def USUARIOvsIA(game):
     pygame.quit()
 
 
-def usuarioVSusuario():
+def usuarioVSusuario(game):
     running = True
-    while running:
-        screen.fill((0, 0, 0))
 
-        draw_text('Usuario VS Usuario', font, (255, 255, 0), screen, 20, 20)
+    while running:
+
+        if game.turn == WHITE:
+
+            pygame.display.update()
+
+        # interfaz para ganador
+        if game.winner() is not None:
+            pygame.display.update()
+
+            winner = game.winner(WHITE)
+            print(winner)
+            font = pygame.font.SysFont(None, 48)
+            text = font.render("El ganador es: " + winner,
+                               True, (255, 255, 255))
+            text_rect = text.get_rect(center=screen.get_rect().center)
+            screen.blit(text, text_rect)
+            running = False
+            break
+
         for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                row, col = get_row_col_from_mouse(pos)
+                game.select(row, col)
+
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
-
+        game.update()
         pygame.display.update()
         mainClock.tick(60)
+
+    pygame.quit()
 
 
 def iaVSia():
