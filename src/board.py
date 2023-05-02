@@ -182,3 +182,5 @@ class Board:
             right += 1
         
         return moves
+    
+    

@@ -1,45 +1,43 @@
 import pygame
+import os
 import random
 import pickle
+import matplotlib.pyplot as plt
 from copy import deepcopy
 from constants import *
-from board import Board 
+from board import Board
 from piece import *
-
-
 
 
 def minimax(position, depth, max_player, game, population_size, num_generations):
     # la profundidad es 0 o si hay un ganador, se devuelve la evaluación de la posición actual.
     if depth == 0 or position.winner() != None:
         return position.evaluate(), position
-
     # Si el jugador actual es el jugador máximo, se busca el mejor movimiento para el jugador.
     if max_player:
         maxEval = float('-inf')
         best_move = None
-        best_individual = None
 
-        best_individual = genetic_algorithm(
+        best_individual= genetic_algorithm(
             position, WHITE, game, population_size, num_generations)
+        
+        # Graficar la curva de aprendizaje
+        plot_learning_curve('best_fitness_scores.txt')
 
         for move in get_all_moves(position, WHITE, game):
             # Se obtiene la evaluación del movimiento actual.
             evaluation = minimax(move, depth-1, False, game,
                                  population_size, num_generations)[0]
-            # print (minimax(move, depth-1, False, game,population_size, num_generations))
             # Se actualiza el valor máximo y se guarda el movimiento actual si la evaluación es igual.
             maxEval = max(maxEval, evaluation)
             if maxEval == evaluation:
                 best_move = move
                 best_individual_eval = evaluate_board(best_individual, WHITE)
 
-        print("MaxEval:", maxEval)
+        print("\nMaxEval:", maxEval)
         print("Best Move:", best_move)
-        print("Best Individual Eval:", best_individual_eval, "\n")
-
-        # if best_individual_eval>=maxEval:
-        # return best_individual_eval,best_individual
+        print("Best Individual Eval:",   best_individual_eval)
+        
 
         return maxEval, best_move
     # Si el jugador actual no es el jugador máximo, se busca el mejor movimiento para el oponente.
@@ -58,12 +56,10 @@ def minimax(position, depth, max_player, game, population_size, num_generations)
                 best_move = move
                 best_individual_eval = evaluate_board(best_individual, BLACK)
 
-        print("MinEval:", minEval)
+        print("\nMinEval:", minEval)
         print("Best Move:", best_move)
-        print("Best Individual Eval:", best_individual_eval, "\n")
+        print("Best Individual Eval:" , best_individual_eval, "\n")
 
-        # if best_individual_eval <= minEval:
-        # return best_individual_eval, best_individual
 
         return minEval, best_move
 
@@ -104,7 +100,6 @@ def get_all_moves(board, color, game):
 
 
 def evaluate_board(board, color):
-    board = Board()
     """
     Evalúa la calidad del estado actual del tablero.
     Cuanto mayor sea la puntuación, mejor será el estado para el jugador.
@@ -152,7 +147,6 @@ def evaluate_board(board, color):
 
 
 def generate_population(board, color, game, size):
-    board = Board()
     population = []
     for i in range(size):
         individual = []
@@ -165,7 +159,7 @@ def generate_population(board, color, game, size):
                 temp_board = move
             else:
                 break
-        fitness = evaluate_board(board, color)
+        fitness = evaluate_board(temp_board, color)
         population.append({"moves": individual, "fitness": fitness})
     return population
 
@@ -173,13 +167,15 @@ def generate_population(board, color, game, size):
 def tournament_selection(population, num_parents):
     parents = []
     for i in range(num_parents):
-        # Seleccionar dos individuos aleatorios del conjunto de población
-        tournament = random.sample(population, 2)
-        # Evaluar el desempeño de cada individuo
-        fitness_a = evaluate_board(tournament[0], WHITE)
-        fitness_b = evaluate_board(tournament[1], WHITE)
-        # Seleccionar el mejor individuo del torneo
-        if fitness_a >= fitness_b:
+        # Seleccionar dos índices aleatorios del conjunto de población
+        indices = random.sample(range(len(population)), 2)
+        print("\nSeleccion por torneo:",indices)
+        # Extraer los individuos correspondientes a esos índices
+        tournament = [population[indices[0]], population[indices[1]]]
+        print("\nIndividuos",tournament)
+        
+        # Comparar el desempeño de cada individuo usando la aptitud almacenada
+        if tournament[0]['fitness'] >= tournament[1]['fitness']:
             parents.append(tournament[0])
         else:
             parents.append(tournament[1])
@@ -193,24 +189,39 @@ def crossover(parent1, parent2):
     """
     # Seleccionamos un punto aleatorio para dividir las soluciones de los padres
     split_point = random.randint(1, min(len(parent1), len(parent2))-1)
+    print("\nCorte",split_point)
 
     # Combinamos las soluciones de los dos padres intercambiando algunos movimientos
     offspring_moves = parent1["moves"][:split_point] + \
         parent2["moves"][split_point:]
-    offspring_fitness = evaluate_board(offspring_moves, WHITE)
-
+      
+    print("\nHijo:",offspring_moves)
+    
+    moves_count=len(offspring_moves)
+    for i in range (moves_count):
+        offspring_fitness = evaluate_board(offspring_moves[i], WHITE)
    # Creamos un nuevo diccionario de descendencia con los movimientos combinados y la puntuación de aptitud
     offspring = {"moves": offspring_moves, "fitness": offspring_fitness}
 
     return offspring
 
 
-def mutate(board, color):
-    board = Board()
+def mutate(child, color):
     """
-    Cambia aleatoriamente una parte de una solución (en este caso, una configuración de tablero)
-    para producir una variación. Por ejemplo, se podría cambiar aleatoriamente la posición de una o más piezas del tablero.
+    Cambia aleatoriamente una parte de una solución (en este caso, una secuencia de movimientos)
+    para producir una variación. Por ejemplo, se podría cambiar aleatoriamente un movimiento en la secuencia.
     """
+    moves = child["moves"]
+
+    if not moves:
+        return child
+
+    # Seleccionar un índice aleatorio de movimientos.
+    index = random.randint(0, len(moves) - 1)
+
+    # Obtener el tablero en el índice seleccionado.
+    board = moves[index]
+
     # Obtener una pieza aleatoria del tablero.
     piece = random.choice(board.get_all_pieces(color))
 
@@ -218,7 +229,7 @@ def mutate(board, color):
     valid_moves = board.get_valid_moves(piece)
 
     if not valid_moves:
-        return board
+        return child
 
     # Seleccionar un movimiento aleatorio.
     move, skip = random.choice(list(valid_moves.items()))
@@ -228,7 +239,13 @@ def mutate(board, color):
     temp_piece = temp_board.get_piece(piece.row, piece.col)
     new_board = simulate_move(temp_piece, move, temp_board, None, skip)
 
-    return new_board
+    # Reemplazar el tablero en el índice seleccionado con el tablero mutado.
+    moves[index] = new_board
+
+    # Actualizar la aptitud del hijo.
+    child["fitness"] = evaluate_board(new_board, color)
+
+    return child
 
 
 def replacement(population, offspring):
@@ -251,50 +268,100 @@ def replacement(population, offspring):
     return sorted_population[:len(population)]
 
 
+def select_board(population, generation):
+    index = generation % len(population)
+    selected_board = population[index]['moves'][-1]
+    return selected_board
+
+
+def save_best_fitness_scores(filename, best_fitness_scores):
+    with open(filename, 'a') as file:
+        for score in best_fitness_scores:
+            file.write(str(score) + '\n')
+
 
 def genetic_algorithm(board, color, game, population_size, num_generations):
-   
+    
+    best_fitness_scores = []
+    
+    filename = 'population.pkl'
 
-    # Cargar la población guardada si existe, de lo contrario generar una nueva población
-    try:
-        population = load_population('population.pkl')
-    except FileNotFoundError:
-        board = Board()
-        # Generar la población inicial
+    # Verificar si existe el archivo de población guardado
+    if os.path.exists(filename):
+        # Cargar la población del archivo
+        population = load_population(filename)
+        print("\nSe cargo Correctamente",population)
+    else:
+        # Generar una nueva población
         population = generate_population(board, color, game, population_size)
-        # Guardar la población inicial
-        save_population(population, 'population.pkl')
 
-     # Imprime el contenido de la población
+    #Imprime el contenido de la población
     for index, individual in enumerate(population, start=1):
-        print(f"Individual {index}: {individual}\n")
+        print(f"\nIndividual {index}: {individual}\n")
 
-    for i in range(num_generations):
+    
+    for generation in range(num_generations):
+        print(f"\nGeneración {generation + 1}:")
+        best_fitness_scores.append(max(individual['fitness'] for individual in population))
+        # Seleccionar un tablero en función del número de generación
+        selected_board = select_board(population, generation)
+        board_evaluation = evaluate_board(selected_board, color)
+        print("\nEvaluación del tablero seleccionado:", board_evaluation)
+
         # Selección de padres
         parents = tournament_selection(
-            population, num_parents=len(population)//2)
+            population, 2)
 
         # Generación de descendencia mediante cruce y mutación
         offspring = []
         for j in range(0, len(parents), 2):
             parent1 = parents[j]
+            print("\nPadre 1",parent1)
             parent2 = parents[j+1]
+            print("\nPadre 2",parent2)
             child = crossover(parent1, parent2)
+            print("\nChild",child)
             mutated_child = mutate(child, color)
+            print("\nMutate Child",mutated_child)
             offspring.append(mutated_child)
 
-        # Evaluación de la aptitud de la descendencia
-        fitness_descendencia = [evaluate_board(
-            individual, color) for individual in offspring]
-
-        # print(fitness_descendencia)
-
         # Reemplazo de los individuos menos aptos por los más aptos de la descendencia
-        population = replacement(population, population)
+        population = replacement(population, offspring)
+
+        save_population(population, 'population.pkl')
 
     # Devolver el mejor individuo de la última generación
-    best_individual = max(population, key=lambda x: evaluate_board(x, color))
-    return best_individual
+    best_individual = max(population, key=lambda x: x['fitness'])
+    best_board = best_individual['moves'][-1]
+    
+    save_best_fitness_scores('best_fitness_scores.txt', best_fitness_scores)
+
+    return best_board
+
+
+def plot_learning_curve(filename):
+    all_best_fitness_scores = []
+    current_scores = []
+
+    with open(filename, 'r') as file:
+        for line in file:
+            line = line.strip()
+            if line == '---':
+                all_best_fitness_scores.append(current_scores)
+                current_scores = []
+            else:
+                current_scores.append(float(line))
+
+        if current_scores:
+            all_best_fitness_scores.append(current_scores)
+
+    for best_fitness_scores in all_best_fitness_scores:
+        plt.plot(best_fitness_scores)
+
+    plt.xlabel('Generations')
+    plt.ylabel('Best Fitness Score')
+    plt.title('Genetic Algorithm Learning Curve')
+    plt.show()
 
 
 def draw_moves(game, board, piece):

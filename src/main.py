@@ -8,7 +8,7 @@ from minmax.algorithm import minimax
 
 mainClock = pygame.time.Clock()
 pygame.init()
-pygame.display.set_caption('JUEGO DAMAS M&M')
+pygame.display.set_caption("JUEGO DAMAS M&M")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
@@ -37,9 +37,8 @@ def main():
     game = Game(screen)
 
     while run:
-
         screen.fill((37, 73, 41))
-        draw_text('JUEGO DAMAS', font, (192, 192, 192), screen, 175, 30)
+        draw_text("JUEGO DAMAS", font, (192, 192, 192), screen, 175, 30)
 
         mx, my = pygame.mouse.get_pos()
 
@@ -58,17 +57,17 @@ def main():
                 iaVSia()
 
         pygame.draw.rect(screen, (192, 192, 192), button_1)
-        button_1_text = font.render('HUMAN vs IA', True, (0, 0, 0))
+        button_1_text = font.render("HUMAN vs IA", True, (0, 0, 0))
         button_1_text_rect = button_1_text.get_rect(center=button_1.center)
         screen.blit(button_1_text, button_1_text_rect)
 
         pygame.draw.rect(screen, (192, 192, 192), button_3)
-        button_1_text = font.render('HUMAN vs HUMAN', True, (0, 0, 0))
+        button_1_text = font.render("HUMAN vs HUMAN", True, (0, 0, 0))
         button_1_text_rect = button_1_text.get_rect(center=button_3.center)
         screen.blit(button_1_text, button_1_text_rect)
 
         pygame.draw.rect(screen, (192, 192, 192), button_2)
-        button_1_text = font.render('IA vs IA', True, (0, 0, 0))
+        button_1_text = font.render("IA vs IA", True, (0, 0, 0))
         button_1_text_rect = button_1_text.get_rect(center=button_2.center)
         screen.blit(button_1_text, button_1_text_rect)
 
@@ -94,16 +93,15 @@ def main():
 
 
 def USUARIOvsIA(game):
-
     running = True
-    population_size = 100
-    num_generations = 10
+    population_size = 4
+    num_generations = 1
 
     while running:
-
         if game.turn == WHITE:
             value, new_board = minimax(
-                game.getBoard(), 2, WHITE, game, population_size, num_generations)
+                game.getBoard(), 2, WHITE, game, population_size, num_generations
+            )
             game.ai_move(new_board)
             pygame.display.update()
 
@@ -111,18 +109,15 @@ def USUARIOvsIA(game):
         if game.winner() is not None:
             pygame.display.update()
 
-            winner = game.winner(WHITE)
+            winner = game.winner()
             print(winner)
             font = pygame.font.SysFont(None, 48)
-            text = font.render("El ganador es: " + winner,
-                               True, (255, 255, 255))
+            text = font.render("El ganador es: " + str(winner), True, (255, 255, 255))
             text_rect = text.get_rect(center=screen.get_rect().center)
             screen.blit(text, text_rect)
-            running = False
             break
 
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -144,9 +139,7 @@ def usuarioVSusuario(game):
     running = True
 
     while running:
-
         if game.turn == WHITE:
-
             pygame.display.update()
 
         # interfaz para ganador
@@ -156,15 +149,13 @@ def usuarioVSusuario(game):
             winner = game.winner(WHITE)
             print(winner)
             font = pygame.font.SysFont(None, 48)
-            text = font.render("El ganador es: " + winner,
-                               True, (255, 255, 255))
+            text = font.render("El ganador es: " + winner, True, (255, 255, 255))
             text_rect = text.get_rect(center=screen.get_rect().center)
             screen.blit(text, text_rect)
             running = False
             break
 
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -187,7 +178,7 @@ def iaVSia():
     while running:
         screen.fill((0, 0, 0))
 
-        draw_text('IA VS IA', font, (255, 255, 255), screen, 20, 20)
+        draw_text("IA VS IA", font, (255, 255, 255), screen, 20, 20)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
