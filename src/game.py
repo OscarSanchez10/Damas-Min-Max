@@ -53,6 +53,11 @@ class Game:
 
         return True
     
+    def network_move(self, move):
+        # Aquí 'move' es una tupla que contiene el movimiento recibido a través de la conexión
+        # Realiza el movimiento en el tablero
+        self.board.move(move[0], move[1], move[2], move[3])
+    
     def draw_valid_moves(self,moves):
         for move in moves:
             row, col = move

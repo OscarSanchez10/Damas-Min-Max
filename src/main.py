@@ -4,9 +4,11 @@ import sys
 from constants import WIDTH, HEIGHT, WHITE, SQUARE, BLACK
 from game import Game
 from minmax.algorithm import minimax
+from conexion.network import Network
 
 
 mainClock = pygame.time.Clock()
+n=Network()
 pygame.init()
 pygame.display.set_caption("JUEGO DAMAS M&M")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
