@@ -1,14 +1,13 @@
 from pygame.locals import *
-import pygame
+import pygame, asyncio
 import sys
 from constants import WIDTH, HEIGHT, WHITE, SQUARE, BLACK
 from game import Game
 from minmax.algorithm import minimax
-from conexion.network import Network
+import time
 
 
 mainClock = pygame.time.Clock()
-n=Network()
 pygame.init()
 pygame.display.set_caption("JUEGO DAMAS M&M")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -34,7 +33,7 @@ def get_row_col_from_mouse(pos):
     return row, col
 
 
-def main():
+async def main():
     run = True
     game = Game(screen)
 
@@ -88,7 +87,7 @@ def main():
 
                 if event.button == 1:
                     click = True
-
+        await asyncio.sleep(0)
         pygame.display.update()
 
     pygame.quit()
@@ -98,6 +97,8 @@ def USUARIOvsIA(game):
     running = True
     population_size = 4
     num_generations = 1
+    user_move_start_time = None
+    user_move_time_limit = 10  # el usuario tiene 10 segundos para hacer un movimiento
 
     while running:
         if game.turn == WHITE:
@@ -106,7 +107,9 @@ def USUARIOvsIA(game):
             )
             game.ai_move(new_board)
             pygame.display.update()
-
+            user_move_start_time = (
+                time.time()
+            )  
         # interfaz para ganador
         if game.winner() is not None:
             pygame.display.update()
@@ -127,9 +130,28 @@ def USUARIOvsIA(game):
                 row, col = get_row_col_from_mouse(pos)
                 game.select(row, col)
 
+                # si el usuario hace un movimiento, reiniciar el temporizador
+                user_move_start_time = time.time()
+
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
+
+        # si el usuario se tarda demasiado, terminar el juego
+        if (
+            user_move_start_time is not None
+            and time.time() - user_move_start_time > user_move_time_limit
+        ):
+            
+            
+            font = pygame.font.SysFont(None, 48)
+            text = font.render("Perdio Turno: " , True, (255, 255, 255))
+            text_rect = text.get_rect(center=screen.get_rect().center)
+            screen.blit(text, text_rect)
+            pygame.time.delay(500)
+            game.turn=WHITE
+            
+
         game.update()
         pygame.display.update()
         mainClock.tick(60)
@@ -193,4 +215,4 @@ def iaVSia():
         mainClock.tick(60)
 
 
-main()
+asyncio.run(main())

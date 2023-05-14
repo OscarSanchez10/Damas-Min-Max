@@ -5,7 +5,6 @@ import pickle
 import matplotlib.pyplot as plt
 from copy import deepcopy
 from constants import *
-from board import Board
 from piece import *
 
 
@@ -23,7 +22,7 @@ def minimax(position, depth, max_player, game, population_size, num_generations)
         )
 
         # Graficar la curva de aprendizaje
-        # plot_learning_curve('best_fitness_scores.txt')
+        #plot_learning_curve('best_fitness_scores.txt')
 
         for move in get_all_moves(position, WHITE, game):
             # Se obtiene la evaluación del movimiento actual.
@@ -91,7 +90,7 @@ def get_all_moves(board, color, game):
     for piece in board.get_all_pieces(color):
         valid_moves = board.get_valid_moves(piece)
         for move, skip in valid_moves.items():
-            # draw_moves(game, board, piece)
+            #draw_moves(game, board, piece)
             # Se crea una copia del tablero y de la pieza para simular el movimiento.
             temp_board = deepcopy(board)
             temp_piece = temp_board.get_piece(piece.row, piece.col)
@@ -370,4 +369,4 @@ def draw_moves(game, board, piece):
     pygame.draw.circle(game.window, (0, 255, 0), (piece.x, piece.y), 30, 5)
     game.draw_valid_moves(valid_moves.keys())
     pygame.display.update()
-    # pygame.time.delay(1500)
+    pygame.time.delay(500)

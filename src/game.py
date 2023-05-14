@@ -4,14 +4,15 @@ from constants import *
 
 
 class Game:
-    def __init__(self, window):
+    def __init__(self, window=None):
         self._init()
         self.window = window
 
     def update(self):
-        self.board.draw(self.window)
-        self.draw_valid_moves(self.valid_moves)
-        pygame.display.update()
+        if self.window:  # Comprueba si la ventana existe antes de intentar usarla
+            self.board.draw(self.window)
+            self.draw_valid_moves(self.valid_moves)
+            pygame.display.update()
 
     def _init(self):
         self.selected = None
@@ -24,14 +25,14 @@ class Game:
 
     def reset(self):
         self._init()
-        
+
     def select(self, row, col):
         if self.selected:
             result = self._move(row, col)
             if not result:
                 self.selected = None
                 self.select(row, col)
-        
+
         piece = self.board.get_piece(row, col)
         if piece != 0 and piece.color == self.turn:
             self.selected = piece
@@ -52,17 +53,15 @@ class Game:
             return False
 
         return True
-    
+
     def network_move(self, move):
-        # Aquí 'move' es una tupla que contiene el movimiento recibido a través de la conexión
-        # Realiza el movimiento en el tablero
         self.board.move(move[0], move[1], move[2], move[3])
-    
-    def draw_valid_moves(self,moves):
-        for move in moves:
-            row, col = move
-            pygame.draw.circle(self.window,RED,(col * SQUARE + SQUARE//2, row * SQUARE + SQUARE//2), 30)
-       
+
+    def draw_valid_moves(self, moves):
+        if self.window:  # Comprueba si la ventana existe antes de intentar usarla
+            for move in moves:
+                row, col = move
+                pygame.draw.circle(self.window, RED, (col * SQUARE + SQUARE // 2, row * SQUARE + SQUARE // 2), 30)
 
     def change_turn(self):
         self.valid_moves = {}
@@ -71,10 +70,9 @@ class Game:
         else:
             self.turn = BLACK
 
-    
     def getBoard(self):
         return self.board
-    
-    def ai_move(self,board):
-        self.board=board
+
+    def ai_move(self, board):
+        self.board = board
         self.change_turn()
