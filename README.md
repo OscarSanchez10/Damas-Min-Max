@@ -10,7 +10,7 @@ En resumen, esta propuesta de comparación, en lugar de una integración directa
 
 El Juego Tiene Tres modos De juegos 
 
-1)JUgador Vs Jugador 
+1)Jugador Vs Jugador 
 2)Jugador Vs Maquina
 3)Maquina Vs Maquina 
 
