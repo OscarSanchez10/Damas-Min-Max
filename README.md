@@ -27,7 +27,7 @@ Pygame: Pygame es una biblioteca de Python que proporciona funcionalidades para 
 #pip install pygame
 ```
 
-##Cómo ejecutar el juego 🤼 
+## Cómo ejecutar el juego 🤼 
 
 Sigue los siguientes pasos para ejecutar el juego de damas:
 
