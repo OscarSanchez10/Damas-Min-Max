@@ -1,5 +1,5 @@
 
-# ♟ Damas-Min-Max implementing genetic algorithms ♟
+# ♟Damas-Min-Max implementing genetic algorithms♟
 
 El código proporcionado es una implementación del juego de damas utilizando la biblioteca Pygame de Python. En el que se comparan y analizan el algoritmo genético y el algoritmo Minimax en su papel de mejorar el rendimiento de la inteligencia artificial en el juego. En lugar de una integración directa de estos dos algoritmos, el objetivo es explorar sus fortalezas y debilidades a través de una comparación práctica.
 
