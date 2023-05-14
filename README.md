@@ -50,7 +50,5 @@ Si deseas contribuir a este proyecto, puedes seguir los siguientes pasos:
 5.Envía tus cambios a tu repositorio remoto: git push origin nueva-funcionalidad.
 6.Crea una Pull Request en este repositorio para que revisemos tus cambios y los fusionemos con la rama principal.
 
-## Créditos 🏆
 
-Este juego de damas en Pygame fue desarrollado por Michael Mauricio Gonzalez Medina y Karol Melissa Velasco Caceres . El proyecto se basa en la biblioteca Pygame y utiliza los conceptos fundamentales de la programación de juegos , Inteligencia artificial.
 
