@@ -15,6 +15,11 @@ El Juego Tiene Tres modos De juegos
 2.Jugador Vs Maquina
 3.Maquina Vs Maquina 
 ```
+## Puedes Jugar la Version Jugador Vs Maquina Aqui : 
+
+https://mikehormiga.itch.io/damas-genetic-algorithm
+
+
 ## Requisitos de instalación 🖲
 
 Para ejecutar y jugar el juego de damas en Pygame, es necesario tener instalado lo siguiente:
