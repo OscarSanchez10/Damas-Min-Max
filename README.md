@@ -23,7 +23,9 @@ Python: Asegúrate de tener Python instalado en tu sistema. Puedes descargar la 
 
 Pygame: Pygame es una biblioteca de Python que proporciona funcionalidades para el desarrollo de juegos. Puedes instalar Pygame utilizando el siguiente comando en la línea de comandos:
 
+```bash
 #pip install pygame
+```
 
 ##Cómo ejecutar el juego 🤼 
 
@@ -32,9 +34,9 @@ Sigue los siguientes pasos para ejecutar el juego de damas:
 1.Clona o descarga este repositorio en tu máquina local.
 2.Abre una terminal o línea de comandos y navega hasta el directorio del proyecto.
 3.Ejecuta el siguiente comando para iniciar el juego:
-
+```bash
 python main.py
-
+```
 El juego se abrirá en una ventana de Pygame. Puedes seleccionar diferentes modos de juego, como "Humano vs IA", "Humano vs Humano" o "IA vs IA". Sigue las instrucciones en la pantalla para jugar y disfrutar del juego.
 
 ## Créditos 🏆
