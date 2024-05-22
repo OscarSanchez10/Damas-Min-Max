@@ -9,7 +9,7 @@ import time
 
 mainClock = pygame.time.Clock()
 pygame.init()
-pygame.display.set_caption("JUEGO DAMAS M&M")
+pygame.display.set_caption("JUEGO DAMAS")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
@@ -38,14 +38,13 @@ async def main():
     game = Game(screen)
 
     while run:
-        screen.fill((37, 73, 41))
-        draw_text("JUEGO DAMAS", font, (192, 192, 192), screen, 175, 30)
+        screen.fill((135, 206, 235))  # Cambiar el color a azul cielo
+        draw_text("JUEGO DE DAMAS ", font, (0, 0, 0), screen, 175, 30)
 
         mx, my = pygame.mouse.get_pos()
 
         button_1 = pygame.Rect(150, 100, 200, 50)
-        button_3 = pygame.Rect(150, 300, 200, 50)
-        button_2 = pygame.Rect(150, 200, 200, 50)
+        button_3 = pygame.Rect(150, 160, 200, 50)
 
         if button_1.collidepoint((mx, my)):
             if click:
@@ -53,24 +52,16 @@ async def main():
         if button_3.collidepoint((mx, my)):
             if click:
                 usuarioVSusuario(game)
-        if button_2.collidepoint((mx, my)):
-            if click:
-                iaVSia()
 
         pygame.draw.rect(screen, (192, 192, 192), button_1)
-        button_1_text = font.render("HUMAN vs IA", True, (0, 0, 0))
+        button_1_text = font.render("HUMANO vs IA", True, (0, 0, 0))
         button_1_text_rect = button_1_text.get_rect(center=button_1.center)
         screen.blit(button_1_text, button_1_text_rect)
 
         pygame.draw.rect(screen, (192, 192, 192), button_3)
-        button_1_text = font.render("HUMAN vs HUMAN", True, (0, 0, 0))
-        button_1_text_rect = button_1_text.get_rect(center=button_3.center)
-        screen.blit(button_1_text, button_1_text_rect)
-
-        pygame.draw.rect(screen, (192, 192, 192), button_2)
-        button_1_text = font.render("IA vs IA", True, (0, 0, 0))
-        button_1_text_rect = button_1_text.get_rect(center=button_2.center)
-        screen.blit(button_1_text, button_1_text_rect)
+        button_3_text = font.render("HUMANO vs HUMANO", True, (0, 0, 0))
+        button_3_text_rect = button_3_text.get_rect(center=button_3.center)
+        screen.blit(button_3_text, button_3_text_rect)
 
         click = False
         for event in pygame.event.get():
@@ -91,6 +82,7 @@ async def main():
         pygame.display.update()
 
     pygame.quit()
+
 
 
 def USUARIOvsIA(game):
@@ -202,7 +194,7 @@ def iaVSia():
     while running:
         screen.fill((0, 0, 0))
 
-        draw_text("IA VS IA", font, (255, 255, 255), screen, 20, 20)
+        draw_text("Proximamente chavalin", font, (255, 255, 255), screen, 20, 20)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()

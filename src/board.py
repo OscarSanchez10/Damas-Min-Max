@@ -13,7 +13,7 @@ class Board:
 
     # Metodo para Dibujar el tablero
     def draw_square(self, window):
-        window.fill(BLUE)
+        window.fill(RED)
         for row in range(ROWS):
             for col in range(row % 2, ROWS, 2):
                 pygame.draw.rect(
